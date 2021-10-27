@@ -44,15 +44,6 @@ void OpenGLWindow::handleEvent(SDL_Event &event) {
     if (event.button.button == SDL_BUTTON_RIGHT)
       m_gameData.m_input.reset(static_cast<size_t>(Input::Up));
   }
-  if (event.type == SDL_MOUSEMOTION) {
-    glm::ivec2 mousePosition;
-    SDL_GetMouseState(&mousePosition.x, &mousePosition.y);
-
-    glm::vec2 direction{glm::vec2{mousePosition.x - m_viewportWidth / 2,
-                                  mousePosition.y - m_viewportHeight / 2}};
-    direction.y = -direction.y;
-    m_ship.setRotation(std::atan2(direction.y, direction.x) - M_PI_2);
-  }
 }
 
 void OpenGLWindow::initializeGL() {
@@ -84,7 +75,7 @@ void OpenGLWindow::initializeGL() {
 void OpenGLWindow::restart() {
   m_gameData.m_state = State::Playing;
 
-  m_ship.initializeGL(m_objectsProgram);
+  m_car.initializeGL(m_objectsProgram);
 }
 
 void OpenGLWindow::update() {
@@ -97,7 +88,7 @@ void OpenGLWindow::update() {
     return;
   }
 
-  m_ship.update(m_gameData, deltaTime);
+  m_car.update(m_gameData, deltaTime);
 }
 
 void OpenGLWindow::paintGL() {
@@ -106,7 +97,7 @@ void OpenGLWindow::paintGL() {
   abcg::glClear(GL_COLOR_BUFFER_BIT);
   abcg::glViewport(0, 0, m_viewportWidth, m_viewportHeight);
 
-  m_ship.paintGL(m_gameData);
+  m_car.paintGL(m_gameData);
 }
 
 void OpenGLWindow::paintUI() {
@@ -145,5 +136,5 @@ void OpenGLWindow::resizeGL(int width, int height) {
 void OpenGLWindow::terminateGL() {
   abcg::glDeleteProgram(m_objectsProgram);
 
-  m_ship.terminateGL();
+  m_car.terminateGL();
 }

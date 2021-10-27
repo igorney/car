@@ -7,7 +7,7 @@
 
 class OpenGLWindow;
 
-class Ship {
+class Car {
  public:
   void initializeGL(GLuint program);
   void paintGL(const GameData &gameData);

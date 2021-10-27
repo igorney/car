@@ -25,7 +25,7 @@ class OpenGLWindow : public abcg::OpenGLWindow {
 
   GameData m_gameData;
 
-  Ship m_ship;
+  Car m_car;
 
   abcg::ElapsedTimer m_restartWaitTimer;
 
