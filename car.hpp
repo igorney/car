@@ -6,6 +6,7 @@
 
 
 class OpenGLWindow;
+class StarLayers;
 
 class Car {
  public:
@@ -17,7 +18,8 @@ class Car {
   void setRotation(float rotation) { m_rotation = rotation; }
 
  private:
-  friend OpenGLWindow;  
+  friend OpenGLWindow;
+  friend StarLayers;
 
   GLuint m_program{};
   GLint m_translationLoc{};

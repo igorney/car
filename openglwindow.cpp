@@ -59,6 +59,10 @@ void OpenGLWindow::initializeGL() {
   m_objectsProgram = createProgramFromFile(getAssetsPath() + "objects.vert",
                                            getAssetsPath() + "objects.frag");
 
+  // Create program to render the stars
+  m_starsProgram = createProgramFromFile(getAssetsPath() + "stars.vert",
+                                         getAssetsPath() + "stars.frag");
+
   abcg::glClearColor(0, 1, 0, 0);
 
 #if !defined(__EMSCRIPTEN__)
@@ -74,7 +78,7 @@ void OpenGLWindow::initializeGL() {
 
 void OpenGLWindow::restart() {
   m_gameData.m_state = State::Playing;
-
+  m_starLayers.initializeGL(m_starsProgram, 25);
   m_car.initializeGL(m_objectsProgram);
 }
 
@@ -89,6 +93,7 @@ void OpenGLWindow::update() {
   }
 
   m_car.update(m_gameData, deltaTime);
+  m_starLayers.update(m_car, deltaTime);
 }
 
 void OpenGLWindow::paintGL() {
@@ -96,7 +101,7 @@ void OpenGLWindow::paintGL() {
 
   abcg::glClear(GL_COLOR_BUFFER_BIT);
   abcg::glViewport(0, 0, m_viewportWidth, m_viewportHeight);
-
+  m_starLayers.paintGL();
   m_car.paintGL(m_gameData);
 }
 
@@ -135,6 +140,7 @@ void OpenGLWindow::resizeGL(int width, int height) {
 
 void OpenGLWindow::terminateGL() {
   abcg::glDeleteProgram(m_objectsProgram);
-
+  abcg::glDeleteProgram(m_starsProgram);
   m_car.terminateGL();
+  m_starLayers.terminateGL();
 }

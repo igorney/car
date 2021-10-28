@@ -13,11 +13,11 @@ void Car::initializeGL(GLuint program) {
   m_translationLoc = abcg::glGetUniformLocation(m_program, "translation");
 
   m_rotation = 0.0f;
-  m_translation = glm::vec2(0);
+  m_translation = glm::vec2(0, -0.5);
   m_velocity = glm::vec2(0);
 
   // clang-format off
-  std::array<glm::vec2, 27> positions{
+  std::array<glm::vec2, 50> positions{
       // Corpo do carro
       glm::vec2{-02.5f, +12.5f}, glm::vec2{-15.5f, +02.5f},
       glm::vec2{-15.5f, -12.5f}, glm::vec2{-09.5f, -07.5f},

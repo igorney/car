@@ -7,6 +7,7 @@
 
 #include "abcg.hpp"
 #include "car.hpp"
+#include "starlayers.hpp"
 
 class OpenGLWindow : public abcg::OpenGLWindow {
  protected:
@@ -19,6 +20,7 @@ class OpenGLWindow : public abcg::OpenGLWindow {
 
  private:
   GLuint m_objectsProgram{};
+  GLuint m_starsProgram{};
 
   int m_viewportWidth{};
   int m_viewportHeight{};
@@ -26,6 +28,7 @@ class OpenGLWindow : public abcg::OpenGLWindow {
   GameData m_gameData;
 
   Car m_car;
+  StarLayers m_starLayers;
 
   abcg::ElapsedTimer m_restartWaitTimer;
 
