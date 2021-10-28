@@ -1,5 +1,5 @@
-#ifndef SHIP_HPP_
-#define SHIP_HPP_
+#ifndef CAR_HPP_
+#define CAR_HPP_
 
 #include "abcg.hpp"
 #include "gamedata.hpp"

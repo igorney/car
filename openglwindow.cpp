@@ -59,7 +59,7 @@ void OpenGLWindow::initializeGL() {
   m_objectsProgram = createProgramFromFile(getAssetsPath() + "objects.vert",
                                            getAssetsPath() + "objects.frag");
 
-  abcg::glClearColor(0, 0, 0, 1);
+  abcg::glClearColor(0, 1, 0, 0);
 
 #if !defined(__EMSCRIPTEN__)
   abcg::glEnable(GL_PROGRAM_POINT_SIZE);
