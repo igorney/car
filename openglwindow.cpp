@@ -105,7 +105,6 @@ void OpenGLWindow::restart() {
   m_gameData.m_state = State::Playing;
   m_car.initializeGL(m_objectsProgram);
   m_asteroids.initializeGL(m_objectsProgram, 3);
- 
 }
 
 void OpenGLWindow::update() {
@@ -148,7 +147,7 @@ void OpenGLWindow::paintGL() {
 
   abcg::glClear(GL_COLOR_BUFFER_BIT);
   abcg::glViewport(0, 0, m_viewportWidth, m_viewportHeight);
-  
+  m_asteroids.paintGL();
   m_car.paintGL(m_gameData);
 }
 
