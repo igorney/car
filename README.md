@@ -18,7 +18,11 @@
 
  <img style="border-radius: 50%;" src="https://avatars.githubusercontent.com/u/63355502?s=400&u=96d53188071a061d643b78620ba76d09c2e3bfb9&v=4" width="100px;" alt=""/>
  <br />
- <sub><b>Jacqueline Marinho RA: 11201812013</b> \ 
+ <sub><b>Jacqueline Marinho RA: 11201812013</b> 
+ 
+ ---
+ 
+ \ 
 
 
 
