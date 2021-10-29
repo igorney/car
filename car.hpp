@@ -6,7 +6,7 @@
 
 
 class OpenGLWindow;
-
+class Asteroids;
 
 class Car {
  public:
@@ -19,6 +19,7 @@ class Car {
 
  private:
   friend OpenGLWindow;
+  friend Asteroids;
 
 
   GLuint me_program{};
