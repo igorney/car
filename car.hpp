@@ -8,6 +8,7 @@
 class OpenGLWindow;
 class StarLayers;
 
+
 class Car {
  public:
   void initializeGL(GLuint program);
@@ -21,6 +22,7 @@ class Car {
   friend OpenGLWindow;
   friend StarLayers;
 
+
   GLuint me_program{};
   GLint m_translationLoc{};
   GLint m_colorLoc{};
@@ -29,6 +31,7 @@ class Car {
 
   GLuint m_vao{};
   GLuint m_vbo{};
+  GLuint m_vbo_color{};
   GLuint m_ebo{};
 
   glm::vec4 m_color{1};

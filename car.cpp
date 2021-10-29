@@ -6,8 +6,7 @@
 void Car::initializeGL(GLuint program) {
   terminateGL();
 
-  me_program = program;
-  m_colorLoc = abcg::glGetUniformLocation(me_program, "color");
+  me_program = program; 
   m_rotationLoc = abcg::glGetUniformLocation(me_program, "rotation");
   m_scaleLoc = abcg::glGetUniformLocation(me_program, "scale");
   m_translationLoc = abcg::glGetUniformLocation(me_program, "translation");
@@ -42,6 +41,33 @@ void Car::initializeGL(GLuint program) {
       glm::vec2{+12.5f, -04.0f}, glm::vec2{+12.5f, -10.5f},
   };
 
+  //Cores do Carro
+  std::array<glm::vec4, 50> colors{
+      // Corpo do carro ------ MUDAR
+      glm::vec4{0,1,0,0}, glm::vec4{0,1,0,0},
+      glm::vec4{0,1,0,0}, glm::vec4{0,1,0,0},
+      glm::vec4{0,1,0,0}, glm::vec4{0,1,0,0},
+      glm::vec4{0,1,0,0}, glm::vec4{0,1,0,0},
+      glm::vec4{0,1,0,0}, glm::vec4{0,1,0,0},
+      
+	  
+	  // Roda esquerda superior
+       glm::vec4{0,1,0,0}, glm::vec4{0,1,0,0},
+      glm::vec4{0,1,0,0}, glm::vec4{0,1,0,0},
+	  
+      // Roda direita superior
+       glm::vec4{0,1,0,0}, glm::vec4{0,1,0,0},
+      glm::vec4{0,1,0,0}, glm::vec4{0,1,0,0},
+	  
+	  // Roda esquerda inferior
+       glm::vec4{0,1,0,0}, glm::vec4{0,1,0,0},
+      glm::vec4{0,1,0,0}, glm::vec4{0,1,0,0},
+
+      // Roda direita inferior
+       glm::vec4{0,1,0,0}, glm::vec4{0,1,0,0},
+      glm::vec4{0,1,0,0}, glm::vec4{0,1,0,0},
+  };
+
   // Normalize
   for (auto &position : positions) {
     position /= glm::vec2{15.5f, 15.5f};
@@ -71,6 +97,13 @@ void Car::initializeGL(GLuint program) {
                      GL_STATIC_DRAW);
   abcg::glBindBuffer(GL_ARRAY_BUFFER, 0);
 
+  //VBO color 
+  abcg::glGenBuffers(1, &m_vbo_color);
+  abcg::glBindBuffer(GL_ARRAY_BUFFER, m_vbo_color);
+  abcg::glBufferData(GL_ARRAY_BUFFER, sizeof(colors), colors.data(),
+                     GL_STATIC_DRAW);
+  abcg::glBindBuffer(GL_ARRAY_BUFFER, 0); 
+
   // Generate EBO
   abcg::glGenBuffers(1, &m_ebo);
   abcg::glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, m_ebo);
@@ -81,6 +114,8 @@ void Car::initializeGL(GLuint program) {
   // Get location of attributes in the program
   GLint positionAttribute{abcg::glGetAttribLocation(me_program, "inPosition")};
 
+  GLint colorAttribute{abcg::glGetAttribLocation(me_program, "inColor")};
+
   // Create VAO
   abcg::glGenVertexArrays(1, &m_vao);
 
@@ -90,6 +125,12 @@ void Car::initializeGL(GLuint program) {
   abcg::glEnableVertexAttribArray(positionAttribute);
   abcg::glBindBuffer(GL_ARRAY_BUFFER, m_vbo);
   abcg::glVertexAttribPointer(positionAttribute, 2, GL_FLOAT, GL_FALSE, 0,
+                              nullptr);
+  abcg::glBindBuffer(GL_ARRAY_BUFFER, 0);
+
+  abcg::glEnableVertexAttribArray(colorAttribute);
+  abcg::glBindBuffer(GL_ARRAY_BUFFER, m_vbo_color);
+  abcg::glVertexAttribPointer(colorAttribute, 4, GL_FLOAT, GL_FALSE, 0,
                               nullptr);
   abcg::glBindBuffer(GL_ARRAY_BUFFER, 0);
 
@@ -120,15 +161,13 @@ void Car::paintGL(const GameData &gameData) {
       abcg::glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 
       // 50% transparent
-      abcg::glUniform4f(m_colorLoc, 2, 3, 4, 0.5f);
-
+      
       abcg::glDrawElements(GL_TRIANGLES, 14 * 3, GL_UNSIGNED_INT, nullptr);
 
       abcg::glDisable(GL_BLEND);
     }
   }
-
-  abcg::glUniform4fv(m_colorLoc, 1, &m_color.r);
+ 
   abcg::glDrawElements(GL_TRIANGLES, 12 * 3, GL_UNSIGNED_INT, nullptr);
 
   abcg::glBindVertexArray(0);
@@ -139,15 +178,21 @@ void Car::paintGL(const GameData &gameData) {
 void Car::terminateGL() {
   abcg::glDeleteBuffers(1, &m_vbo);
   abcg::glDeleteBuffers(1, &m_ebo);
+  abcg::glDeleteVertexArrays(1, &m_vbo_color);
   abcg::glDeleteVertexArrays(1, &m_vao);
+
 }
 
 void Car::update(const GameData &gameData, float deltaTime) {
   // Rotate
-  if (gameData.m_input[static_cast<size_t>(Input::Left)])
+  if (gameData.m_input[static_cast<size_t>(Input::Left)]) {
     m_rotation = glm::wrapAngle(m_rotation + 4.0f * deltaTime);
-  if (gameData.m_input[static_cast<size_t>(Input::Right)])
+    m_translation.x = m_translation.x - 0.5f * deltaTime;
+  }
+  if (gameData.m_input[static_cast<size_t>(Input::Right)]) {
     m_rotation = glm::wrapAngle(m_rotation - 4.0f * deltaTime);
+    m_translation.x = m_translation.x + 0.5f * deltaTime;
+  }
 
   // Apply thrust
   if (gameData.m_input[static_cast<size_t>(Input::Up)] &&

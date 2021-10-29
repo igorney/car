@@ -35,11 +35,13 @@ class OpenGLWindow : public abcg::OpenGLWindow {
   Car m_car;
   StarLayers m_starLayers;
 
+
   abcg::ElapsedTimer m_restartWaitTimer;
 
   ImFont* m_font{};
 
   std::default_random_engine m_randomEngine;
+
 
   void restart();
   void update();

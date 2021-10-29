@@ -108,6 +108,7 @@ void OpenGLWindow::restart() {
   m_gameData.m_state = State::Playing;
   m_starLayers.initializeGL(m_starsProgram, 25);
   m_car.initializeGL(m_objectsProgram);
+ 
 }
 
 void OpenGLWindow::update() {
@@ -122,6 +123,7 @@ void OpenGLWindow::update() {
 
   m_car.update(m_gameData, deltaTime);
   m_starLayers.update(m_car, deltaTime);
+ 
 }
 
 void OpenGLWindow::paintGL() {
@@ -150,6 +152,7 @@ void OpenGLWindow::paintGL() {
   abcg::glClear(GL_COLOR_BUFFER_BIT);
   abcg::glViewport(0, 0, m_viewportWidth, m_viewportHeight);
   m_starLayers.paintGL();
+  
   m_car.paintGL(m_gameData);
 }
 
@@ -215,5 +218,7 @@ void OpenGLWindow::terminateGL() {
   abcg::glDeleteProgram(m_objectsProgram);
   abcg::glDeleteProgram(m_starsProgram);
   m_car.terminateGL();
+ 
   m_starLayers.terminateGL();
 }
+
