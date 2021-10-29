@@ -5,20 +5,21 @@
 
 int main(int argc, char **argv) {
   try {
+    // Create application instance
     abcg::Application app(argc, argv);
 
+    // Create OpenGL window
     auto window{std::make_unique<OpenGLWindow>()};
     window->setOpenGLSettings({.profile = abcg::OpenGLProfile::Core,
                                .majorVersion = 4,
-                               .minorVersion = 1,
-				.samples = 4});
-    window->setWindowSettings({.width = 600,
-                               .height = 600,
-                               .showFPS = false,                              
-                               .title = "Asteroids"});
+                               .minorVersion = 1});
+    window->setWindowSettings(
+        {.width = 600, .height = 600, .showFPS = false, .title = "Car!"});
+
+    // Run application
     app.run(std::move(window));
   } catch (const abcg::Exception &exception) {
-    fmt::print(stderr, "{}\n", exception.what());
+    fmt::print(stderr, "{}", exception.what());
     return -1;
   }
   return 0;

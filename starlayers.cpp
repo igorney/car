@@ -9,9 +9,9 @@ void StarLayers::initializeGL(GLuint program, int quantity) {
   m_randomEngine.seed(
       std::chrono::steady_clock::now().time_since_epoch().count());
 
-  m_program = program;
-  m_pointSizeLoc = abcg::glGetUniformLocation(m_program, "pointSize");
-  m_translationLoc = abcg::glGetUniformLocation(m_program, "translation");
+  me_program = program;
+  m_pointSizeLoc = abcg::glGetUniformLocation(me_program, "pointSize");
+  m_translationLoc = abcg::glGetUniformLocation(me_program, "translation");
 
   auto &re{m_randomEngine};
   std::uniform_real_distribution<float> distPos(-1.0f, 1.0f);
@@ -36,8 +36,8 @@ void StarLayers::initializeGL(GLuint program, int quantity) {
     abcg::glBindBuffer(GL_ARRAY_BUFFER, 0);
 
     // Get location of attributes in the program
-    GLint positionAttribute{abcg::glGetAttribLocation(m_program, "inPosition")};
-    GLint colorAttribute{abcg::glGetAttribLocation(m_program, "inColor")};
+    GLint positionAttribute{abcg::glGetAttribLocation(me_program, "inPosition")};
+    GLint colorAttribute{abcg::glGetAttribLocation(me_program, "inColor")};
 
     // Create VAO
     abcg::glGenVertexArrays(1, &layer.m_vao);
@@ -61,7 +61,7 @@ void StarLayers::initializeGL(GLuint program, int quantity) {
 }
 
 void StarLayers::paintGL() {
-  abcg::glUseProgram(m_program);
+  abcg::glUseProgram(me_program);
 
   abcg::glEnable(GL_BLEND);
   abcg::glBlendFunc(GL_ONE, GL_ONE);

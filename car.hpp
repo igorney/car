@@ -21,7 +21,7 @@ class Car {
   friend OpenGLWindow;
   friend StarLayers;
 
-  GLuint m_program{};
+  GLuint me_program{};
   GLint m_translationLoc{};
   GLint m_colorLoc{};
   GLint m_scaleLoc{};

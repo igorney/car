@@ -21,7 +21,7 @@ class StarLayers {
  private:
   friend OpenGLWindow;
 
-  GLuint m_program{};
+  GLuint me_program{};
   GLint m_pointSizeLoc{};
   GLint m_translationLoc{};
 

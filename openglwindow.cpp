@@ -2,7 +2,13 @@
 
 #include <imgui.h>
 
+#include <cppitertools/itertools.hpp>
+#include <glm/vec2.hpp>
+#include <glm/vec3.hpp>
+#include <gsl/gsl>
+
 #include "abcg.hpp"
+
 
 void OpenGLWindow::handleEvent(SDL_Event &event) {
   // Keyboard events
@@ -45,15 +51,13 @@ void OpenGLWindow::handleEvent(SDL_Event &event) {
       m_gameData.m_input.reset(static_cast<size_t>(Input::Up));
   }
 }
-
 void OpenGLWindow::initializeGL() {
-  // Load a new font
-  ImGuiIO &io{ImGui::GetIO()};
-  auto filename{getAssetsPath() + "Inconsolata-Medium.ttf"};
-  m_font = io.Fonts->AddFontFromFileTTF(filename.c_str(), 60.0f);
-  if (m_font == nullptr) {
-    throw abcg::Exception{abcg::Exception::Runtime("Cannot load font file")};
-  }
+  // Enable Z-buffer test
+  glEnable(GL_DEPTH_TEST);
+
+  // Create shader program
+  m_program = createProgramFromFile(getAssetsPath() + "UnlitVertexColor.vert",
+                                    getAssetsPath() + "UnlitVertexColor.frag");
 
   // Create program to render the other objects
   m_objectsProgram = createProgramFromFile(getAssetsPath() + "objects.vert",
@@ -61,10 +65,33 @@ void OpenGLWindow::initializeGL() {
 
   // Create program to render the stars
   m_starsProgram = createProgramFromFile(getAssetsPath() + "stars.vert",
-                                         getAssetsPath() + "stars.frag");
+                                         getAssetsPath() + "stars.frag");                                  
+  
 
-  abcg::glClearColor(0, 1, 0, 0);
+  // Get location of attributes in the program
+  GLint positionAttribute{glGetAttribLocation(m_program, "inPosition")};
+  GLint colorAttribute{glGetAttribLocation(m_program, "inColor")};
 
+  // Create VAO
+  glGenVertexArrays(1, &m_vao);
+
+  // Bind vertex attributes to current VAO
+  glBindVertexArray(m_vao);
+
+  glEnableVertexAttribArray(positionAttribute);
+  glBindBuffer(GL_ARRAY_BUFFER, m_vboVertices);
+  glVertexAttribPointer(positionAttribute, 2, GL_FLOAT, GL_FALSE, 0, nullptr);
+  glBindBuffer(GL_ARRAY_BUFFER, 0);
+
+  glEnableVertexAttribArray(colorAttribute);
+  glBindBuffer(GL_ARRAY_BUFFER, m_vboColors);
+  glVertexAttribPointer(colorAttribute, 3, GL_FLOAT, GL_FALSE, 0, nullptr);
+  glBindBuffer(GL_ARRAY_BUFFER, 0);
+
+  // End of binding to current VAO
+  glBindVertexArray(0);
+
+  
 #if !defined(__EMSCRIPTEN__)
   abcg::glEnable(GL_PROGRAM_POINT_SIZE);
 #endif
@@ -75,6 +102,7 @@ void OpenGLWindow::initializeGL() {
 
   restart();
 }
+
 
 void OpenGLWindow::restart() {
   m_gameData.m_state = State::Playing;
@@ -97,6 +125,26 @@ void OpenGLWindow::update() {
 }
 
 void OpenGLWindow::paintGL() {
+  // Set the clear color
+  glClearColor(gsl::at(m_clearColor, 0), gsl::at(m_clearColor, 1),
+               gsl::at(m_clearColor, 2), gsl::at(m_clearColor, 3));
+  // Clear the color buffer and Z-buffer
+  glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+
+  // Adjust viewport
+  glViewport(0, 0, m_viewportWidth, m_viewportHeight);
+
+  // Start using the shader program
+  glUseProgram(m_program);
+  // Start using the VAO
+  glBindVertexArray(m_vao);
+
+
+  // End using the VAO
+  glBindVertexArray(0);
+  // End using the shader program
+  glUseProgram(0);
+
   update();
 
   abcg::glClear(GL_COLOR_BUFFER_BIT);
@@ -106,9 +154,29 @@ void OpenGLWindow::paintGL() {
 }
 
 void OpenGLWindow::paintUI() {
+  // Parent class will show fullscreen button and FPS meter
   abcg::OpenGLWindow::paintUI();
 
+  // Our own ImGui widgets go below
   {
+    
+    // Window begin
+    ImGui::Begin("!!!!!!!!!!THE CAR!!!!!!!!!!");
+
+    // Static text
+    ImGui::Text("Escolha a cor do seu plano de fundo e divirta-se :)");   
+    
+
+    // Edit background color
+    ImGui::ColorEdit3("Background", m_clearColor.data());
+
+  
+
+    // End of window
+    ImGui::End();    
+  }
+
+   {
     const auto size{ImVec2(300, 85)};
     const auto position{ImVec2((m_viewportWidth - size.x) / 2.0f,
                                (m_viewportHeight - size.y) / 2.0f)};
@@ -135,10 +203,15 @@ void OpenGLWindow::resizeGL(int width, int height) {
   m_viewportWidth = width;
   m_viewportHeight = height;
 
-  abcg::glClear(GL_COLOR_BUFFER_BIT);
+   abcg::glClear(GL_COLOR_BUFFER_BIT);
 }
 
 void OpenGLWindow::terminateGL() {
+  // Release OpenGL resources
+  glDeleteProgram(m_program);
+  glDeleteBuffers(1, &m_vboVertices);
+  glDeleteBuffers(1, &m_vboColors);
+  glDeleteVertexArrays(1, &m_vao);
   abcg::glDeleteProgram(m_objectsProgram);
   abcg::glDeleteProgram(m_starsProgram);
   m_car.terminateGL();

@@ -6,11 +6,11 @@
 void Car::initializeGL(GLuint program) {
   terminateGL();
 
-  m_program = program;
-  m_colorLoc = abcg::glGetUniformLocation(m_program, "color");
-  m_rotationLoc = abcg::glGetUniformLocation(m_program, "rotation");
-  m_scaleLoc = abcg::glGetUniformLocation(m_program, "scale");
-  m_translationLoc = abcg::glGetUniformLocation(m_program, "translation");
+  me_program = program;
+  m_colorLoc = abcg::glGetUniformLocation(me_program, "color");
+  m_rotationLoc = abcg::glGetUniformLocation(me_program, "rotation");
+  m_scaleLoc = abcg::glGetUniformLocation(me_program, "scale");
+  m_translationLoc = abcg::glGetUniformLocation(me_program, "translation");
 
   m_rotation = 0.0f;
   m_translation = glm::vec2(0, -0.5);
@@ -58,9 +58,9 @@ void Car::initializeGL(GLuint program) {
                            14, 16, 17,
 						   // Thruster trails
                            18, 19, 20,
-						   18, 20, 21,
+						               18, 20, 21,
                            22, 23, 24,
-						   22, 24, 25
+						               22, 24, 25
 						   };
   // clang-format on                           
 
@@ -79,7 +79,7 @@ void Car::initializeGL(GLuint program) {
   abcg::glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);
 
   // Get location of attributes in the program
-  GLint positionAttribute{abcg::glGetAttribLocation(m_program, "inPosition")};
+  GLint positionAttribute{abcg::glGetAttribLocation(me_program, "inPosition")};
 
   // Create VAO
   abcg::glGenVertexArrays(1, &m_vao);
@@ -102,7 +102,7 @@ void Car::initializeGL(GLuint program) {
 void Car::paintGL(const GameData &gameData) {
   if (gameData.m_state != State::Playing) return;
 
-  abcg::glUseProgram(m_program);
+  abcg::glUseProgram(me_program);
 
   abcg::glBindVertexArray(m_vao);
 
