@@ -186,11 +186,11 @@ void Car::terminateGL() {
 void Car::update(const GameData &gameData, float deltaTime) {
   // Rotate
   if (gameData.m_input[static_cast<size_t>(Input::Left)]) {
-    m_rotation = glm::wrapAngle(m_rotation + 1.0f * deltaTime);
+    m_rotation = glm::wrapAngle(m_rotation + 4.0f * deltaTime);
     m_translation.x = m_translation.x - 0.5f * deltaTime;
   }
   if (gameData.m_input[static_cast<size_t>(Input::Right)]) {
-    m_rotation = glm::wrapAngle(m_rotation - 1.0f * deltaTime);
+    m_rotation = glm::wrapAngle(m_rotation - 4.0f * deltaTime);
     m_translation.x = m_translation.x + 0.5f * deltaTime;
   }
 
