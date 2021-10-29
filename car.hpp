@@ -6,7 +6,6 @@
 
 
 class OpenGLWindow;
-class StarLayers;
 
 
 class Car {
@@ -20,7 +19,6 @@ class Car {
 
  private:
   friend OpenGLWindow;
-  friend StarLayers;
 
 
   GLuint me_program{};
