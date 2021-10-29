@@ -8,7 +8,7 @@
 
 #include "abcg.hpp"
 #include "car.hpp"
-#include "starlayers.hpp"
+#include "asteroids.hpp"
 
 class OpenGLWindow : public abcg::OpenGLWindow {
  protected:
@@ -25,7 +25,6 @@ class OpenGLWindow : public abcg::OpenGLWindow {
   GLuint m_vboColors{};
   GLuint m_program{};
   GLuint m_objectsProgram{};
-  GLuint m_starsProgram{};
 
   int m_viewportWidth{};
   int m_viewportHeight{};
@@ -33,7 +32,8 @@ class OpenGLWindow : public abcg::OpenGLWindow {
   GameData m_gameData; 
 
   Car m_car;
-  StarLayers m_starLayers;
+  Asteroids m_asteroids;
+
 
 
   abcg::ElapsedTimer m_restartWaitTimer;

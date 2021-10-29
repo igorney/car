@@ -6,8 +6,7 @@
 
 
 class OpenGLWindow;
-class StarLayers;
-
+class Asteroids;
 
 class Car {
  public:
@@ -20,7 +19,7 @@ class Car {
 
  private:
   friend OpenGLWindow;
-  friend StarLayers;
+  friend Asteroids;
 
 
   GLuint me_program{};
@@ -36,7 +35,7 @@ class Car {
 
   glm::vec4 m_color{1};
   float m_rotation{};
-  float m_scale{0.125f};
+  float m_scale{0.17f};
   glm::vec2 m_translation{glm::vec2(0)};
   glm::vec2 m_velocity{glm::vec2(0)};
 
