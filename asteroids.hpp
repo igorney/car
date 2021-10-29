@@ -47,7 +47,7 @@ class Asteroids {
   std::uniform_real_distribution<float> m_randomDist{-1.0f, 1.0f};
 
   Asteroids::Asteroid createAsteroid(glm::vec2 translation = glm::vec2(0),
-                                     float scale = 0.25f);
+                                     float scale = 0.10f);
 };
 
 #endif

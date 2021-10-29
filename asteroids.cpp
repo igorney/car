@@ -85,7 +85,7 @@ Asteroids::Asteroid Asteroids::createAsteroid(glm::vec2 translation,
   auto &re{m_randomEngine};  // Shortcut
 
   // Randomly choose the number of sides
-  std::uniform_int_distribution<int> randomSides(6, 20);
+  std::uniform_int_distribution<int> randomSides(3, 9);
   asteroid.m_polygonSides = randomSides(re);
 
   // Choose a random color (actually, a grayscale)
