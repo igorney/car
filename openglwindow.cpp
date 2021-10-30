@@ -11,8 +11,7 @@
 
 int m_objects = 0;
 
-void OpenGLWindow::handleEvent(SDL_Event &event) {
-  // Keyboard events
+void OpenGLWindow::handleEvent(SDL_Event &event) {  
   if (event.type == SDL_KEYDOWN) {
     if (event.key.keysym.sym == SDLK_SPACE)
       m_gameData.m_input.set(static_cast<size_t>(Input::Stop));
@@ -37,8 +36,7 @@ void OpenGLWindow::handleEvent(SDL_Event &event) {
     if (event.key.keysym.sym == SDLK_RIGHT || event.key.keysym.sym == SDLK_d)
       m_gameData.m_input.reset(static_cast<size_t>(Input::Right));
   }
-
-  // Mouse events
+  
   if (event.type == SDL_MOUSEBUTTONDOWN) {
     if (event.button.button == SDL_BUTTON_LEFT)
       m_gameData.m_input.set(static_cast<size_t>(Input::Stop));
@@ -52,8 +50,7 @@ void OpenGLWindow::handleEvent(SDL_Event &event) {
       m_gameData.m_input.reset(static_cast<size_t>(Input::Up));
   }
 }
-void OpenGLWindow::initializeGL() {
-  // Enable Z-buffer test
+void OpenGLWindow::initializeGL() {  
   glEnable(GL_DEPTH_TEST);
 
   ImGuiIO &io{ImGui::GetIO()};
@@ -61,27 +58,20 @@ void OpenGLWindow::initializeGL() {
   m_font = io.Fonts->AddFontFromFileTTF(filename.c_str(), 45.0f);  
   if (m_font == nullptr) {
     throw abcg::Exception{abcg::Exception::Runtime("Cannot load font file")};
-  }
-  
+  }  
 
-  // Create shader program
+  
   m_program = createProgramFromFile(getAssetsPath() + "UnlitVertexColor.vert",
                                     getAssetsPath() + "UnlitVertexColor.frag");
-
-  // Create program to render the other objects
-  m_objectsProgram = createProgramFromFile(getAssetsPath() + "objects.vert",
-                                           getAssetsPath() + "objects.frag");
-
   
-
-  // Get location of attributes in the program
+  m_objectsProgram = createProgramFromFile(getAssetsPath() + "objects.vert",
+                                           getAssetsPath() + "objects.frag");  
+  
   GLint positionAttribute{glGetAttribLocation(m_program, "inPosition")};
   GLint colorAttribute{glGetAttribLocation(m_program, "inColor")};
 
-  // Create VAO
   glGenVertexArrays(1, &m_vao);
 
-  // Bind vertex attributes to current VAO
   glBindVertexArray(m_vao);
 
   glEnableVertexAttribArray(positionAttribute);
@@ -92,17 +82,14 @@ void OpenGLWindow::initializeGL() {
   glEnableVertexAttribArray(colorAttribute);
   glBindBuffer(GL_ARRAY_BUFFER, m_vboColors);
   glVertexAttribPointer(colorAttribute, 3, GL_FLOAT, GL_FALSE, 0, nullptr);
-  glBindBuffer(GL_ARRAY_BUFFER, 0);
-
-  // End of binding to current VAO
+  glBindBuffer(GL_ARRAY_BUFFER, 0);  
   glBindVertexArray(0);
 
   
 #if !defined(__EMSCRIPTEN__)
   abcg::glEnable(GL_PROGRAM_POINT_SIZE);
-#endif
-
-  // Start pseudo-random number generator
+  #endif
+  
   m_randomEngine.seed(
       std::chrono::steady_clock::now().time_since_epoch().count());
 
@@ -120,8 +107,7 @@ void OpenGLWindow::restart() {
 
 void OpenGLWindow::update() {
   float deltaTime{static_cast<float>(getDeltaTime())};
-
-  // Wait 5 seconds before restarting
+  
   if (m_gameData.m_state != State::Playing &&
       m_restartWaitTimer.elapsed() > 5) {
         m_objects = 0;
@@ -138,25 +124,19 @@ void OpenGLWindow::update() {
   }
 }
  
-void OpenGLWindow::paintGL() {
-  // Set the clear color
+void OpenGLWindow::paintGL() {  
   glClearColor(gsl::at(m_clearColor, 0), gsl::at(m_clearColor, 1),
-               gsl::at(m_clearColor, 2), gsl::at(m_clearColor, 3));
-  // Clear the color buffer and Z-buffer
+               gsl::at(m_clearColor, 2), gsl::at(m_clearColor, 3));  
   glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-
-  // Adjust viewport
+  
   glViewport(0, 0, m_viewportWidth, m_viewportHeight);
-
-  // Start using the shader program
+  
   glUseProgram(m_program);
-  // Start using the VAO
+  
   glBindVertexArray(m_vao);
-
-
-  // End using the VAO
+  
   glBindVertexArray(0);
-  // End using the shader program
+  
   glUseProgram(0);
 
   update();
@@ -168,23 +148,13 @@ void OpenGLWindow::paintGL() {
 }
 
 void OpenGLWindow::paintUI() {
-  // Parent class will show fullscreen button and FPS meter
+  
   abcg::OpenGLWindow::paintUI();
-
-  // Our own ImGui widgets go below
-  {
-    
-    // Window begin
-    ImGui::Begin("!!!!!!!!!!Carrinho da coleta!!!!!!!!!!");
-
-    // Static text
-    ImGui::Text("Escolha a cor do seu plano de fundo e divirta-se :)");   
-    
-
-    // Edit background color
-    ImGui::ColorEdit3("Background", m_clearColor.data()); 
-
-    // End of window
+ 
+  {   
+    ImGui::Begin("!!!!!!!!!!CARRINHO DA COLETA!!!!!!!!!!");    
+    ImGui::Text("Escolha a cor do seu plano de fundo e divirta-se :)"); 
+    ImGui::ColorEdit3("Background", m_clearColor.data());     
     ImGui::End();    
   }
 
@@ -201,9 +171,8 @@ void OpenGLWindow::paintUI() {
     ImGui::PushFont(m_font);
 
     if (m_gameData.m_state == State::Win) {
-      ImGui::Text("Você coletou: %d objetos!!", m_objects);
+      ImGui::Text("Você coletou: %d itens!!", m_objects);
     }
-
     ImGui::PopFont();
     ImGui::End();
   }
@@ -216,8 +185,7 @@ void OpenGLWindow::resizeGL(int width, int height) {
    abcg::glClear(GL_COLOR_BUFFER_BIT);
 }
 
-void OpenGLWindow::terminateGL() {
-  // Release OpenGL resources
+void OpenGLWindow::terminateGL() {  
   glDeleteProgram(m_program);
   glDeleteBuffers(1, &m_vboVertices);
   glDeleteBuffers(1, &m_vboColors);
@@ -227,50 +195,40 @@ void OpenGLWindow::terminateGL() {
   m_items.terminateGL();
 }
 
-void OpenGLWindow::checkCollisions() {
-  // Check collision between ship and items
-  //int m_objects = 0;
-  for ( auto &asteroid : m_items.m_items) {
-    const auto asteroidTranslation{asteroid.m_translation};
+void OpenGLWindow::checkCollisions() {  
+  for ( auto &item : m_items.m_items) {
+    const auto itemTranslation{item.m_translation};
     const auto distance{
-        glm::distance(m_car.m_translation, asteroidTranslation)};
+        glm::distance(m_car.m_translation, itemTranslation)};
 
-    if (distance < m_car.m_scale * 0.9f + asteroid.m_scale * 0.85f) {
-      asteroid.m_hit = true;
-      m_objects++;
-      
-      //m_gameData.m_state = State::GameOver;
-      //m_restartWaitTimer.restart();
+    if (distance < m_car.m_scale * 0.9f + item.m_scale * 0.85f) {
+      item.m_hit = true;
+      m_objects++;      
     }
   } 
 
-    // Break items marked as hit
-    for (auto &asteroid : m_items.m_items) {
-      if (asteroid.m_hit && asteroid.m_scale > 0.10f) {
+    for (auto &item : m_items.m_items) {
+      if (item.m_hit && item.m_scale > 0.10f) {
         std::uniform_real_distribution<float> m_randomDist{-1.0f, 1.0f};
         std::generate_n(std::back_inserter(m_items.m_items), 3, [&]() {
           const glm::vec2 offset{m_randomDist(m_randomEngine),
                                  m_randomDist(m_randomEngine)};
-          return m_items.createAsteroid(
-              asteroid.m_translation + offset * asteroid.m_scale * 0.5f,
-              asteroid.m_scale * 0.5f);
+          return m_items.createItem(
+              item.m_translation + offset * item.m_scale * 0.5f,
+              item.m_scale * 0.5f);
         });
       }
     }
 
     m_items.m_items.remove_if(
-        []( Items::Asteroid &a) { return a.m_hit; });
+        []( Items::Item &a) { return a.m_hit; });
   }
 
 
 void OpenGLWindow::checkWinCondition() {
   if (m_timerGame.elapsed() > 10) {
     m_gameData.m_state = State::Win;
-    m_restartWaitTimer.restart();
-    //m_objects = 0;
-    //m_timerGame.restart();
-  }
-  
-  
+    m_restartWaitTimer.restart();    
+  }  
 }
 

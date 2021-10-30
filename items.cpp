@@ -6,7 +6,7 @@
 void Items::initializeGL(GLuint program, int quantity) {
   terminateGL();
 
-  // Start pseudo-random number generator
+  
   m_randomEngine.seed(
       std::chrono::steady_clock::now().time_since_epoch().count());
 
@@ -16,37 +16,37 @@ void Items::initializeGL(GLuint program, int quantity) {
   m_scaleLoc = abcg::glGetUniformLocation(m_program, "scale");
   m_translationLoc = abcg::glGetUniformLocation(m_program, "translation");
 
-  // Create items
+  
   m_items.clear();
   m_items.resize(quantity);
 
-  for (auto &asteroid : m_items) {
-    asteroid = createAsteroid();
+  for (auto &item : m_items) {
+    item = createItem();
 
-    // Make sure the asteroid won't collide with the car
+    
     do {
-      asteroid.m_translation = {m_randomDist(m_randomEngine),
+      item.m_translation = {m_randomDist(m_randomEngine),
                                 m_randomDist(m_randomEngine)};
-    } while (glm::length(asteroid.m_translation) < 0.5f);
+    } while (glm::length(item.m_translation) < 0.5f);
   }
 }
 
 void Items::paintGL() {
   abcg::glUseProgram(m_program);
 
-  for (const auto &asteroid : m_items) {
-    abcg::glBindVertexArray(asteroid.m_vao);
+  for (const auto &item : m_items) {
+    abcg::glBindVertexArray(item.m_vao);
 
-    abcg::glUniform4fv(m_colorLoc, 1, &asteroid.m_color.r);
-    abcg::glUniform1f(m_scaleLoc, asteroid.m_scale);
-    abcg::glUniform1f(m_rotationLoc, asteroid.m_rotation);
+    abcg::glUniform4fv(m_colorLoc, 1, &item.m_color.r);
+    abcg::glUniform1f(m_scaleLoc, item.m_scale);
+    abcg::glUniform1f(m_rotationLoc, item.m_rotation);
 
     for (auto i : {-2, 0, 2}) {
       for (auto j : {-2, 0, 2}) {
-        abcg::glUniform2f(m_translationLoc, asteroid.m_translation.x + j,
-                          asteroid.m_translation.y + i);
+        abcg::glUniform2f(m_translationLoc, item.m_translation.x + j,
+                          item.m_translation.y + i);
 
-        abcg::glDrawArrays(GL_TRIANGLE_FAN, 0, asteroid.m_polygonSides + 2);
+        abcg::glDrawArrays(GL_TRIANGLE_FAN, 0, item.m_polygonSides + 2);
       }
     }
 
@@ -57,57 +57,56 @@ void Items::paintGL() {
 }
 
 void Items::terminateGL() {
-  for (auto asteroid : m_items) {
-    abcg::glDeleteBuffers(1, &asteroid.m_vbo);
-    abcg::glDeleteVertexArrays(1, &asteroid.m_vao);
+  for (auto item : m_items) {
+    abcg::glDeleteBuffers(1, &item.m_vbo);
+    abcg::glDeleteVertexArrays(1, &item.m_vao);
   }
 }
 
 void Items::update(const Car &car, float deltaTime) {
-  for (auto &asteroid : m_items) {
-    asteroid.m_translation -= car.m_velocity * deltaTime;
-    asteroid.m_rotation = glm::wrapAngle(
-        asteroid.m_rotation + asteroid.m_angularVelocity * deltaTime);
-    asteroid.m_translation += asteroid.m_velocity * deltaTime;
-
-    // Wrap-around
-    if (asteroid.m_translation.x < -1.0f) asteroid.m_translation.x += 2.0f;
-    if (asteroid.m_translation.x > +1.0f) asteroid.m_translation.x -= 2.0f;
-    if (asteroid.m_translation.y < -1.0f) asteroid.m_translation.y += 2.0f;
-    if (asteroid.m_translation.y > +1.0f) asteroid.m_translation.y -= 2.0f;
+  for (auto &item : m_items) {
+    item.m_translation -= car.m_velocity * deltaTime;
+    item.m_rotation = glm::wrapAngle(
+        item.m_rotation + item.m_angularVelocity * deltaTime);
+    item.m_translation += item.m_velocity * deltaTime;
+    
+    if (item.m_translation.x < -1.0f) item.m_translation.x += 2.0f;
+    if (item.m_translation.x > +1.0f) item.m_translation.x -= 2.0f;
+    if (item.m_translation.y < -1.0f) item.m_translation.y += 2.0f;
+    if (item.m_translation.y > +1.0f) item.m_translation.y -= 2.0f;
   }
 }
 
-Items::Asteroid Items::createAsteroid(glm::vec2 translation,
+Items::Item Items::createItem(glm::vec2 translation,
                                               float scale) {
-  Asteroid asteroid;
+  Item item;
 
-  auto &re{m_randomEngine};  // Shortcut
+  auto &re{m_randomEngine}; 
 
-  // Randomly choose the number of sides
+  
   std::uniform_int_distribution<int> randomSides(5, 9);
-  asteroid.m_polygonSides = randomSides(re);
+  item.m_polygonSides = randomSides(re);
 
-  // Choose a random color (actually, a grayscale)
+  
   std::uniform_real_distribution<float> randomIntensity(0.5f, 1.0f);
-  asteroid.m_color = glm::vec4(1) * randomIntensity(re);
+  item.m_color = glm::vec4(1) * randomIntensity(re);
 
-  asteroid.m_color.a = 1.0f;
-  asteroid.m_rotation = 0.0f;
-  asteroid.m_scale = scale;
-  asteroid.m_translation = translation;
+  item.m_color.a = 1.0f;
+  item.m_rotation = 0.0f;
+  item.m_scale = scale;
+  item.m_translation = translation;
 
-  // Choose a random angular velocity
-  asteroid.m_angularVelocity = m_randomDist(re);
+  
+  item.m_angularVelocity = m_randomDist(re);
 
-  // Choose a random direction
+  
   glm::vec2 direction{m_randomDist(re), m_randomDist(re)};
-  asteroid.m_velocity = glm::normalize(direction) / 7.0f;
+  item.m_velocity = glm::normalize(direction) / 7.0f;
 
-  // Create geometry
+  
   std::vector<glm::vec2> positions(0);
   positions.emplace_back(0, 0);
-  const auto step{M_PI * 2 / asteroid.m_polygonSides};
+  const auto step{M_PI * 2 / item.m_polygonSides};
   std::uniform_real_distribution<float> randomRadius(0.8f, 1.0f);
   for (const auto angle : iter::range(0.0, M_PI * 2, step)) {
     const auto radius{randomRadius(re)};
@@ -115,30 +114,29 @@ Items::Asteroid Items::createAsteroid(glm::vec2 translation,
   }
   positions.push_back(positions.at(1));
 
-  // Generate VBO
-  abcg::glGenBuffers(1, &asteroid.m_vbo);
-  abcg::glBindBuffer(GL_ARRAY_BUFFER, asteroid.m_vbo);
+  
+  abcg::glGenBuffers(1, &item.m_vbo);
+  abcg::glBindBuffer(GL_ARRAY_BUFFER, item.m_vbo);
   abcg::glBufferData(GL_ARRAY_BUFFER, positions.size() * sizeof(glm::vec2),
                      positions.data(), GL_STATIC_DRAW);
   abcg::glBindBuffer(GL_ARRAY_BUFFER, 0);
 
-  // Get location of attributes in the program
+  
   GLint positionAttribute{abcg::glGetAttribLocation(m_program, "inPosition")};
 
-  // Create VAO
-  abcg::glGenVertexArrays(1, &asteroid.m_vao);
+  
+  abcg::glGenVertexArrays(1, &item.m_vao);
 
-  // Bind vertex attributes to current VAO
-  abcg::glBindVertexArray(asteroid.m_vao);
+  
+  abcg::glBindVertexArray(item.m_vao);
 
-  abcg::glBindBuffer(GL_ARRAY_BUFFER, asteroid.m_vbo);
+  abcg::glBindBuffer(GL_ARRAY_BUFFER, item.m_vbo);
   abcg::glEnableVertexAttribArray(positionAttribute);
   abcg::glVertexAttribPointer(positionAttribute, 2, GL_FLOAT, GL_FALSE, 0,
                               nullptr);
   abcg::glBindBuffer(GL_ARRAY_BUFFER, 0);
-
-  // End of binding to current VAO
+  
   abcg::glBindVertexArray(0);
 
-  return asteroid;
+  return item;
 }

@@ -46,8 +46,6 @@ class OpenGLWindow : public abcg::OpenGLWindow {
   void restart();
   void update();
 
-  bool m_showDemoWindow{false};
-  bool m_showAnotherWindow{false};
   std::array<float, 4> m_clearColor{0.906f, 0.910f, 0.918f, 1.00f};
 };
 

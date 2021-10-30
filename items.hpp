@@ -27,7 +27,7 @@ class Items {
   GLint m_translationLoc{};
   GLint m_scaleLoc{};
 
-  struct Asteroid {
+  struct Item {
     GLuint m_vao{};
     GLuint m_vbo{};
 
@@ -42,12 +42,12 @@ class Items {
   };
 
   
-  std::list<Asteroid> m_items;
+  std::list<Item> m_items;
 
   std::default_random_engine m_randomEngine;
   std::uniform_real_distribution<float> m_randomDist{-1.0f, 1.0f};
 
-  Items::Asteroid createAsteroid(glm::vec2 translation = glm::vec2(0),
+  Items::Item createItem(glm::vec2 translation = glm::vec2(0),
                                      float scale = 0.10f);
 };
 
