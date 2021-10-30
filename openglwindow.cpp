@@ -59,32 +59,15 @@ void OpenGLWindow::initializeGL() {
   if (m_font == nullptr) {
     throw abcg::Exception{abcg::Exception::Runtime("Cannot load font file")};
   }  
-
-  
-  m_program = createProgramFromFile(getAssetsPath() + "UnlitVertexColor.vert",
-                                    getAssetsPath() + "UnlitVertexColor.frag");
+                              
   
   m_objectsProgram = createProgramFromFile(getAssetsPath() + "objects.vert",
                                            getAssetsPath() + "objects.frag");  
   
-  GLint positionAttribute{glGetAttribLocation(m_program, "inPosition")};
-  GLint colorAttribute{glGetAttribLocation(m_program, "inColor")};
-
   glGenVertexArrays(1, &m_vao);
 
   glBindVertexArray(m_vao);
-
-  glEnableVertexAttribArray(positionAttribute);
-  glBindBuffer(GL_ARRAY_BUFFER, m_vboVertices);
-  glVertexAttribPointer(positionAttribute, 2, GL_FLOAT, GL_FALSE, 0, nullptr);
-  glBindBuffer(GL_ARRAY_BUFFER, 0);
-
-  glEnableVertexAttribArray(colorAttribute);
-  glBindBuffer(GL_ARRAY_BUFFER, m_vboColors);
-  glVertexAttribPointer(colorAttribute, 3, GL_FLOAT, GL_FALSE, 0, nullptr);
-  glBindBuffer(GL_ARRAY_BUFFER, 0);  
-  glBindVertexArray(0);
-
+  
   
 #if !defined(__EMSCRIPTEN__)
   abcg::glEnable(GL_PROGRAM_POINT_SIZE);
@@ -100,7 +83,7 @@ void OpenGLWindow::initializeGL() {
 void OpenGLWindow::restart() {
   m_gameData.m_state = State::Playing;
   m_car.initializeGL(m_objectsProgram);
-  m_items.initializeGL(m_objectsProgram, 70);
+  m_items.initializeGL(m_objectsProgram, 100);
   m_timerGame.restart();
   
 }
@@ -129,9 +112,7 @@ void OpenGLWindow::paintGL() {
                gsl::at(m_clearColor, 2), gsl::at(m_clearColor, 3));  
   glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
   
-  glViewport(0, 0, m_viewportWidth, m_viewportHeight);
-  
-  glUseProgram(m_program);
+  glViewport(0, 0, m_viewportWidth, m_viewportHeight);  
   
   glBindVertexArray(m_vao);
   
@@ -185,8 +166,7 @@ void OpenGLWindow::resizeGL(int width, int height) {
    abcg::glClear(GL_COLOR_BUFFER_BIT);
 }
 
-void OpenGLWindow::terminateGL() {  
-  glDeleteProgram(m_program);
+void OpenGLWindow::terminateGL() {    
   glDeleteBuffers(1, &m_vboVertices);
   glDeleteBuffers(1, &m_vboColors);
   glDeleteVertexArrays(1, &m_vao);
