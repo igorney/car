@@ -16,7 +16,7 @@ void Car::initializeGL(GLuint program) {
   m_velocity = glm::vec2(0);
 
   // clang-format off
-  std::array<glm::vec2, 50> positions{
+  std::array<glm::vec2, 26> positions{
       // Corpo do carro
       glm::vec2{-02.5f, +12.5f}, glm::vec2{-15.5f, +02.5f},
       glm::vec2{-15.5f, -12.5f}, glm::vec2{-09.5f, -07.5f},
@@ -42,7 +42,7 @@ void Car::initializeGL(GLuint program) {
   };
 
   //Cores do Carro
-  std::array<glm::vec4, 50> colors{
+  std::array<glm::vec4, 26> colors{
       // Corpo do carro ------ MUDAR
       glm::vec4{0,1,0,0}, glm::vec4{0,1,0,0},
       glm::vec4{0,1,0,0}, glm::vec4{0,1,0,0},
@@ -52,20 +52,20 @@ void Car::initializeGL(GLuint program) {
       
 	  
 	  // Roda esquerda superior
-       glm::vec4{0,1,0,0}, glm::vec4{0,1,0,0},
-      glm::vec4{0,1,0,0}, glm::vec4{0,1,0,0},
+       glm::vec4{0,0,0,0}, glm::vec4{0,0,0,0},
+      glm::vec4{0,0,0,0}, glm::vec4{0,0,0,0},
 	  
       // Roda direita superior
-       glm::vec4{0,1,0,0}, glm::vec4{0,1,0,0},
-      glm::vec4{0,1,0,0}, glm::vec4{0,1,0,0},
+       glm::vec4{0,0,0,0}, glm::vec4{0,0,0,0},
+      glm::vec4{0,0,0,0}, glm::vec4{0,0,0,0},
 	  
 	  // Roda esquerda inferior
-       glm::vec4{0,1,0,0}, glm::vec4{0,1,0,0},
-      glm::vec4{0,1,0,0}, glm::vec4{0,1,0,0},
+       glm::vec4{0,0,0,0}, glm::vec4{0,0,0,0},
+      glm::vec4{0,0,0,0}, glm::vec4{0,0,0,0},
 
       // Roda direita inferior
-       glm::vec4{0,1,0,0}, glm::vec4{0,1,0,0},
-      glm::vec4{0,1,0,0}, glm::vec4{0,1,0,0},
+       glm::vec4{0,0,0,0}, glm::vec4{0,0,0,0},
+      glm::vec4{0,0,0,0}, glm::vec4{0,0,0,0},
   };
 
   // Normalize
