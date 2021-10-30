@@ -100,7 +100,7 @@ void OpenGLWindow::initializeGL() {
 void OpenGLWindow::restart() {
   m_gameData.m_state = State::Playing;
   m_car.initializeGL(m_objectsProgram);
-  m_items.initializeGL(m_objectsProgram, 50);
+  m_items.initializeGL(m_objectsProgram, 70);
   m_timerGame.restart();
   
 }
