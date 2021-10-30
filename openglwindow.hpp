@@ -8,7 +8,7 @@
 
 #include "abcg.hpp"
 #include "car.hpp"
-#include "asteroids.hpp"
+#include "items.hpp"
 
 class OpenGLWindow : public abcg::OpenGLWindow {
  protected:
@@ -32,22 +32,20 @@ class OpenGLWindow : public abcg::OpenGLWindow {
   GameData m_gameData; 
 
   Car m_car;
-  Asteroids m_asteroids;
-
-
+  Items m_items;
 
   abcg::ElapsedTimer m_restartWaitTimer;
+  abcg::ElapsedTimer m_timerGame;
 
   ImFont* m_font{};
 
   std::default_random_engine m_randomEngine;
 
-
+  void checkCollisions();
+  void checkWinCondition();
   void restart();
   void update();
 
-  bool m_showDemoWindow{false};
-  bool m_showAnotherWindow{false};
   std::array<float, 4> m_clearColor{0.906f, 0.910f, 0.918f, 1.00f};
 };
 

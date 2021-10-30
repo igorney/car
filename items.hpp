@@ -1,5 +1,5 @@
-#ifndef ASTEROIDS_HPP_
-#define ASTEROIDS_HPP_
+#ifndef ITEMS_HPP_
+#define ITEMS_HPP_
 
 #include <list>
 #include <random>
@@ -10,7 +10,7 @@
 
 class OpenGLWindow;
 
-class Asteroids {
+class Items {
  public:
   void initializeGL(GLuint program, int quantity);
   void paintGL();
@@ -27,13 +27,13 @@ class Asteroids {
   GLint m_translationLoc{};
   GLint m_scaleLoc{};
 
-  struct Asteroid {
+  struct Item {
     GLuint m_vao{};
     GLuint m_vbo{};
 
     float m_angularVelocity{};
     glm::vec4 m_color{1};
-    bool m_hit{false};
+    bool m_hit{false};   
     int m_polygonSides{};
     float m_rotation{};
     float m_scale{};
@@ -41,12 +41,13 @@ class Asteroids {
     glm::vec2 m_velocity{glm::vec2(0)};
   };
 
-  std::list<Asteroid> m_asteroids;
+  
+  std::list<Item> m_items;
 
   std::default_random_engine m_randomEngine;
   std::uniform_real_distribution<float> m_randomDist{-1.0f, 1.0f};
 
-  Asteroids::Asteroid createAsteroid(glm::vec2 translation = glm::vec2(0),
+  Items::Item createItem(glm::vec2 translation = glm::vec2(0),
                                      float scale = 0.10f);
 };
 
