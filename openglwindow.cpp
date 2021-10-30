@@ -9,6 +9,7 @@
 
 #include "abcg.hpp"
 
+int m_objects = 0;
 
 void OpenGLWindow::handleEvent(SDL_Event &event) {
   // Keyboard events
@@ -54,6 +55,7 @@ void OpenGLWindow::handleEvent(SDL_Event &event) {
 void OpenGLWindow::initializeGL() {
   // Enable Z-buffer test
   glEnable(GL_DEPTH_TEST);
+  
 
   // Create shader program
   m_program = createProgramFromFile(getAssetsPath() + "UnlitVertexColor.vert",
@@ -113,15 +115,20 @@ void OpenGLWindow::update() {
   // Wait 5 seconds before restarting
   if (m_gameData.m_state != State::Playing &&
       m_restartWaitTimer.elapsed() > 5) {
+        m_objects = 0;
     restart();
     return;
-  }
+  }  
 
   m_car.update(m_gameData, deltaTime);
   m_asteroids.update(m_car, deltaTime);
- 
-}
 
+  if (m_gameData.m_state == State::Playing) {
+  checkCollisions();
+  checkWinCondition();
+  }
+}
+ 
 void OpenGLWindow::paintGL() {
   // Set the clear color
   glClearColor(gsl::at(m_clearColor, 0), gsl::at(m_clearColor, 1),
@@ -166,9 +173,7 @@ void OpenGLWindow::paintUI() {
     
 
     // Edit background color
-    ImGui::ColorEdit3("Background", m_clearColor.data());
-
-  
+    ImGui::ColorEdit3("Background", m_clearColor.data()); 
 
     // End of window
     ImGui::End();    
@@ -189,7 +194,7 @@ void OpenGLWindow::paintUI() {
     if (m_gameData.m_state == State::GameOver) {
       ImGui::Text("Game Over!");
     } else if (m_gameData.m_state == State::Win) {
-      ImGui::Text("*You Win!*");
+      ImGui::Text("Você coletou: %d objetos!!", m_objects);
     }
 
     ImGui::PopFont();
@@ -214,3 +219,51 @@ void OpenGLWindow::terminateGL() {
   m_car.terminateGL();
   m_asteroids.terminateGL();
 }
+
+void OpenGLWindow::checkCollisions() {
+  // Check collision between ship and asteroids
+  //int m_objects = 0;
+  for ( auto &asteroid : m_asteroids.m_asteroids) {
+    const auto asteroidTranslation{asteroid.m_translation};
+    const auto distance{
+        glm::distance(m_car.m_translation, asteroidTranslation)};
+
+    if (distance < m_car.m_scale * 0.9f + asteroid.m_scale * 0.85f) {
+      asteroid.m_hit = true;
+      m_objects++;
+      
+      //m_gameData.m_state = State::GameOver;
+      //m_restartWaitTimer.restart();
+    }
+  } 
+
+    // Break asteroids marked as hit
+    for (auto &asteroid : m_asteroids.m_asteroids) {
+      if (asteroid.m_hit && asteroid.m_scale > 0.10f) {
+        std::uniform_real_distribution<float> m_randomDist{-1.0f, 1.0f};
+        std::generate_n(std::back_inserter(m_asteroids.m_asteroids), 3, [&]() {
+          const glm::vec2 offset{m_randomDist(m_randomEngine),
+                                 m_randomDist(m_randomEngine)};
+          return m_asteroids.createAsteroid(
+              asteroid.m_translation + offset * asteroid.m_scale * 0.5f,
+              asteroid.m_scale * 0.5f);
+        });
+      }
+    }
+
+    m_asteroids.m_asteroids.remove_if(
+        []( Asteroids::Asteroid &a) { return a.m_hit; });
+  }
+
+
+void OpenGLWindow::checkWinCondition() {
+  if (m_timerGame.elapsed() > 10) {
+    m_gameData.m_state = State::Win;
+    m_restartWaitTimer.restart();
+    //m_objects = 0;
+    m_timerGame.restart();
+  }
+  
+  
+}
+

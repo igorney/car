@@ -34,15 +34,15 @@ class OpenGLWindow : public abcg::OpenGLWindow {
   Car m_car;
   Asteroids m_asteroids;
 
-
-
   abcg::ElapsedTimer m_restartWaitTimer;
+  abcg::ElapsedTimer m_timerGame;
 
   ImFont* m_font{};
 
   std::default_random_engine m_randomEngine;
 
-
+  void checkCollisions();
+  void checkWinCondition();
   void restart();
   void update();
 

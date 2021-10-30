@@ -33,7 +33,7 @@ class Asteroids {
 
     float m_angularVelocity{};
     glm::vec4 m_color{1};
-    bool m_hit{false};
+    bool m_hit{false};   
     int m_polygonSides{};
     float m_rotation{};
     float m_scale{};
@@ -41,6 +41,7 @@ class Asteroids {
     glm::vec2 m_velocity{glm::vec2(0)};
   };
 
+  
   std::list<Asteroid> m_asteroids;
 
   std::default_random_engine m_randomEngine;
