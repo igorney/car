@@ -55,6 +55,13 @@ void OpenGLWindow::handleEvent(SDL_Event &event) {
 void OpenGLWindow::initializeGL() {
   // Enable Z-buffer test
   glEnable(GL_DEPTH_TEST);
+
+  ImGuiIO &io{ImGui::GetIO()};
+  const auto filename{getAssetsPath() + "Inconsolata-UltraCondensedBlack.ttf"};
+  m_font = io.Fonts->AddFontFromFileTTF(filename.c_str(), 45.0f);  
+  if (m_font == nullptr) {
+    throw abcg::Exception{abcg::Exception::Runtime("Cannot load font file")};
+  }
   
 
   // Create shader program
@@ -257,7 +264,7 @@ void OpenGLWindow::checkCollisions() {
 
 
 void OpenGLWindow::checkWinCondition() {
-  if (m_timerGame.elapsed() > 10) {
+  if (m_timerGame.elapsed() > 15) {
     m_gameData.m_state = State::Win;
     m_restartWaitTimer.restart();
     //m_objects = 0;
