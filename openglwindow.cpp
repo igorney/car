@@ -113,7 +113,9 @@ void OpenGLWindow::initializeGL() {
 void OpenGLWindow::restart() {
   m_gameData.m_state = State::Playing;
   m_car.initializeGL(m_objectsProgram);
-  m_asteroids.initializeGL(m_objectsProgram, 3);
+  m_asteroids.initializeGL(m_objectsProgram, 50);
+  m_timerGame.restart();
+  
 }
 
 void OpenGLWindow::update() {
@@ -264,11 +266,11 @@ void OpenGLWindow::checkCollisions() {
 
 
 void OpenGLWindow::checkWinCondition() {
-  if (m_timerGame.elapsed() > 15) {
+  if (m_timerGame.elapsed() > 10) {
     m_gameData.m_state = State::Win;
     m_restartWaitTimer.restart();
     //m_objects = 0;
-    m_timerGame.restart();
+    //m_timerGame.restart();
   }
   
   
