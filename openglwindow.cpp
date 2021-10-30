@@ -113,7 +113,7 @@ void OpenGLWindow::initializeGL() {
 void OpenGLWindow::restart() {
   m_gameData.m_state = State::Playing;
   m_car.initializeGL(m_objectsProgram);
-  m_asteroids.initializeGL(m_objectsProgram, 50);
+  m_items.initializeGL(m_objectsProgram, 50);
   m_timerGame.restart();
   
 }
@@ -130,7 +130,7 @@ void OpenGLWindow::update() {
   }  
 
   m_car.update(m_gameData, deltaTime);
-  m_asteroids.update(m_car, deltaTime);
+  m_items.update(m_car, deltaTime);
 
   if (m_gameData.m_state == State::Playing) {
   checkCollisions();
@@ -163,7 +163,7 @@ void OpenGLWindow::paintGL() {
 
   abcg::glClear(GL_COLOR_BUFFER_BIT);
   abcg::glViewport(0, 0, m_viewportWidth, m_viewportHeight);
-  m_asteroids.paintGL();
+  m_items.paintGL();
   m_car.paintGL(m_gameData);
 }
 
@@ -175,7 +175,7 @@ void OpenGLWindow::paintUI() {
   {
     
     // Window begin
-    ImGui::Begin("!!!!!!!!!!THE CAR!!!!!!!!!!");
+    ImGui::Begin("!!!!!!!!!!Carrinho da coleta!!!!!!!!!!");
 
     // Static text
     ImGui::Text("Escolha a cor do seu plano de fundo e divirta-se :)");   
@@ -224,13 +224,13 @@ void OpenGLWindow::terminateGL() {
   glDeleteVertexArrays(1, &m_vao);
   abcg::glDeleteProgram(m_objectsProgram);
   m_car.terminateGL();
-  m_asteroids.terminateGL();
+  m_items.terminateGL();
 }
 
 void OpenGLWindow::checkCollisions() {
-  // Check collision between ship and asteroids
+  // Check collision between ship and items
   //int m_objects = 0;
-  for ( auto &asteroid : m_asteroids.m_asteroids) {
+  for ( auto &asteroid : m_items.m_items) {
     const auto asteroidTranslation{asteroid.m_translation};
     const auto distance{
         glm::distance(m_car.m_translation, asteroidTranslation)};
@@ -244,22 +244,22 @@ void OpenGLWindow::checkCollisions() {
     }
   } 
 
-    // Break asteroids marked as hit
-    for (auto &asteroid : m_asteroids.m_asteroids) {
+    // Break items marked as hit
+    for (auto &asteroid : m_items.m_items) {
       if (asteroid.m_hit && asteroid.m_scale > 0.10f) {
         std::uniform_real_distribution<float> m_randomDist{-1.0f, 1.0f};
-        std::generate_n(std::back_inserter(m_asteroids.m_asteroids), 3, [&]() {
+        std::generate_n(std::back_inserter(m_items.m_items), 3, [&]() {
           const glm::vec2 offset{m_randomDist(m_randomEngine),
                                  m_randomDist(m_randomEngine)};
-          return m_asteroids.createAsteroid(
+          return m_items.createAsteroid(
               asteroid.m_translation + offset * asteroid.m_scale * 0.5f,
               asteroid.m_scale * 0.5f);
         });
       }
     }
 
-    m_asteroids.m_asteroids.remove_if(
-        []( Asteroids::Asteroid &a) { return a.m_hit; });
+    m_items.m_items.remove_if(
+        []( Items::Asteroid &a) { return a.m_hit; });
   }
 
 

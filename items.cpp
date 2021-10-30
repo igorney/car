@@ -1,9 +1,9 @@
-#include "asteroids.hpp"
+#include "items.hpp"
 
 #include <cppitertools/itertools.hpp>
 #include <glm/gtx/fast_trigonometry.hpp>
 
-void Asteroids::initializeGL(GLuint program, int quantity) {
+void Items::initializeGL(GLuint program, int quantity) {
   terminateGL();
 
   // Start pseudo-random number generator
@@ -16,11 +16,11 @@ void Asteroids::initializeGL(GLuint program, int quantity) {
   m_scaleLoc = abcg::glGetUniformLocation(m_program, "scale");
   m_translationLoc = abcg::glGetUniformLocation(m_program, "translation");
 
-  // Create asteroids
-  m_asteroids.clear();
-  m_asteroids.resize(quantity);
+  // Create items
+  m_items.clear();
+  m_items.resize(quantity);
 
-  for (auto &asteroid : m_asteroids) {
+  for (auto &asteroid : m_items) {
     asteroid = createAsteroid();
 
     // Make sure the asteroid won't collide with the car
@@ -31,10 +31,10 @@ void Asteroids::initializeGL(GLuint program, int quantity) {
   }
 }
 
-void Asteroids::paintGL() {
+void Items::paintGL() {
   abcg::glUseProgram(m_program);
 
-  for (const auto &asteroid : m_asteroids) {
+  for (const auto &asteroid : m_items) {
     abcg::glBindVertexArray(asteroid.m_vao);
 
     abcg::glUniform4fv(m_colorLoc, 1, &asteroid.m_color.r);
@@ -56,15 +56,15 @@ void Asteroids::paintGL() {
   abcg::glUseProgram(0);
 }
 
-void Asteroids::terminateGL() {
-  for (auto asteroid : m_asteroids) {
+void Items::terminateGL() {
+  for (auto asteroid : m_items) {
     abcg::glDeleteBuffers(1, &asteroid.m_vbo);
     abcg::glDeleteVertexArrays(1, &asteroid.m_vao);
   }
 }
 
-void Asteroids::update(const Car &car, float deltaTime) {
-  for (auto &asteroid : m_asteroids) {
+void Items::update(const Car &car, float deltaTime) {
+  for (auto &asteroid : m_items) {
     asteroid.m_translation -= car.m_velocity * deltaTime;
     asteroid.m_rotation = glm::wrapAngle(
         asteroid.m_rotation + asteroid.m_angularVelocity * deltaTime);
@@ -78,7 +78,7 @@ void Asteroids::update(const Car &car, float deltaTime) {
   }
 }
 
-Asteroids::Asteroid Asteroids::createAsteroid(glm::vec2 translation,
+Items::Asteroid Items::createAsteroid(glm::vec2 translation,
                                               float scale) {
   Asteroid asteroid;
 

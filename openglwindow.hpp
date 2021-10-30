@@ -8,7 +8,7 @@
 
 #include "abcg.hpp"
 #include "car.hpp"
-#include "asteroids.hpp"
+#include "items.hpp"
 
 class OpenGLWindow : public abcg::OpenGLWindow {
  protected:
@@ -32,7 +32,7 @@ class OpenGLWindow : public abcg::OpenGLWindow {
   GameData m_gameData; 
 
   Car m_car;
-  Asteroids m_asteroids;
+  Items m_items;
 
   abcg::ElapsedTimer m_restartWaitTimer;
   abcg::ElapsedTimer m_timerGame;
