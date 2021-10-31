@@ -64,7 +64,8 @@ Você pode utilizar o conjunto de teclas (w,s,a,d) ou as setas nas quatro direç
 <li>Tecla 's' ou seta para baixo ou tecla espaço: tender a parada</li>
 
 Agora é só divertir-se coletando a maior quantidade de itens que conseguir. \
-Dica: 
+
+<b>Dicas</b>: 
 <li> Mantenha seu carro sempre na região visivel. </li>
 <li> Mesmo após pressionar a tecla que tende a parada, os itens continuam a se mover. </li>
 <li>O jogo é reiniciado a cada dez (10) segundos e é exibido na tela a quantidade de itens coletados na partida. </li> 
