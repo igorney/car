@@ -22,8 +22,7 @@ class OpenGLWindow : public abcg::OpenGLWindow {
  private:
   GLuint m_vao{};
   GLuint m_vboVertices{};
-  GLuint m_vboColors{};
-  GLuint m_program{};
+  GLuint m_vboColors{};  
   GLuint m_objectsProgram{};
 
   int m_viewportWidth{};
